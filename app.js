@@ -48,7 +48,16 @@ app.get("/confirm", (req, res) => {
 });
 
 app.get("/restaurants", (req, res) => {
-  res.render("restaurants");
+  const restaurantDataFilePath = path.join(
+    __dirname,
+    "data",
+    "restaurants.json"
+  );
+  // reading data in a file
+  const fileData = fs.readFileSync(restaurantDataFilePath);
+  // parsing data to JSON
+  const restaurantsData = JSON.parse(fileData);
+  res.render("restaurants", { numberOfRestaurants: restaurantsData.length });
 });
 
 app.listen(3000);
