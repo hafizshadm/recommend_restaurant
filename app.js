@@ -12,18 +12,15 @@ app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (req, res) => {
-  const indexFilePath = path.join(__dirname, "views", "index.html");
-  res.sendFile(indexFilePath);
+  res.render("index");
 });
 
 app.get("/about", (req, res) => {
-  const aboutFilePath = path.join(__dirname, "views", "about.html");
-  res.sendFile(aboutFilePath);
+  res.render("about");
 });
 
 app.get("/recommend", (req, res) => {
-  const recommendFilePath = path.join(__dirname, "views", "recommend.html");
-  res.sendFile(recommendFilePath);
+  res.render("recommend");
 });
 
 app.post("/recommend", (req, res) => {
@@ -47,13 +44,11 @@ app.post("/recommend", (req, res) => {
 });
 
 app.get("/confirm", (req, res) => {
-  const confirmFilePath = path.join(__dirname, "views", "confirm.html");
-  res.sendFile(confirmFilePath);
+  res.render("confirm");
 });
 
 app.get("/restaurants", (req, res) => {
-  const restaurantsFilePath = path.join(__dirname, "views", "restaurants.html");
-  res.sendFile(restaurantsFilePath);
+  res.render("restaurants");
 });
 
 app.listen(3000);
