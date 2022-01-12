@@ -57,7 +57,10 @@ app.get("/restaurants", (req, res) => {
   const fileData = fs.readFileSync(restaurantDataFilePath);
   // parsing data to JSON
   const restaurantsData = JSON.parse(fileData);
-  res.render("restaurants", { numberOfRestaurants: restaurantsData.length });
+  res.render("restaurants", {
+    numberOfRestaurants: restaurantsData.length,
+    restaurants: restaurantsData,
+  });
 });
 
 app.listen(3000);
