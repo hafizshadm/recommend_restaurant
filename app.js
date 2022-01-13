@@ -4,6 +4,7 @@ const path = require("path");
 const uuid = require("uuid");
 const express = require("express");
 const app = express();
+
 //setting up ejs template engine
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
@@ -28,21 +29,13 @@ app.post("/recommend", (req, res) => {
   const restaurant = req.body;
 
   restaurant.id = uuid.v4();
-  const restaurantDataFilePath = path.join(
-    __dirname,
-    "data",
-    "restaurants.json"
-  );
-  // reading data in a file
-  const fileData = fs.readFileSync(restaurantDataFilePath);
-  // parsing data to JSON
-  const restaurantsData = JSON.parse(fileData);
+  const restaurantsData = getStoredRestaurants();
+
   restaurantsData.push(restaurant);
   // writing data in JSON
   const storedRestaurants = JSON.stringify(restaurantsData);
   // writing data in file
-  fs.writeFileSync(restaurantDataFilePath, storedRestaurants);
-
+  storeRestaurants(storedRestaurants);
   res.redirect("/confirm");
 });
 
@@ -51,15 +44,8 @@ app.get("/confirm", (req, res) => {
 });
 
 app.get("/restaurants", (req, res) => {
-  const restaurantDataFilePath = path.join(
-    __dirname,
-    "data",
-    "restaurants.json"
-  );
-  // reading data in a file
-  const fileData = fs.readFileSync(restaurantDataFilePath);
-  // parsing data to JSON
-  const restaurantsData = JSON.parse(fileData);
+  const restaurantsData = getStoredRestaurants();
+
   res.render("restaurants", {
     numberOfRestaurants: restaurantsData.length,
     restaurants: restaurantsData,
@@ -68,15 +54,9 @@ app.get("/restaurants", (req, res) => {
 
 app.get("/restaurant/:id", (req, res) => {
   const restaurantId = req.params.id;
-  const restaurantDataFilePath = path.join(
-    __dirname,
-    "data",
-    "restaurants.json"
-  );
-  // reading data in a file
-  const fileData = fs.readFileSync(restaurantDataFilePath);
-  // parsing data to JSON
-  const restaurantsData = JSON.parse(fileData);
+
+  const restaurantsData = getStoredRestaurants();
+
   for (const restaurant of restaurantsData) {
     if (restaurant.id === restaurantId) {
       res.render("restaurant-details", { restaurant: restaurant });
@@ -86,11 +66,11 @@ app.get("/restaurant/:id", (req, res) => {
 });
 
 app.use((req, res) => {
-  res.render("404");
+  res.status(404).render("404");
 });
 
 app.use((error, req, res, next) => {
-  res.render("500");
+  res.status(500).render("500");
 });
 
 app.listen(3000);
