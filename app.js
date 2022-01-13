@@ -82,6 +82,15 @@ app.get("/restaurant/:id", (req, res) => {
       res.render("restaurant-details", { restaurant: restaurant });
     }
   }
+  res.render("404");
+});
+
+app.use((req, res) => {
+  res.render("404");
+});
+
+app.use((error, req, res, next) => {
+  res.render("500");
 });
 
 app.listen(3000);
