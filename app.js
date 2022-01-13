@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
+const uuid = require("uuid");
 const express = require("express");
 const app = express();
 //setting up ejs template engine
@@ -25,6 +26,8 @@ app.get("/recommend", (req, res) => {
 
 app.post("/recommend", (req, res) => {
   const restaurant = req.body;
+
+  restaurant.id = uuid.v4();
   const restaurantDataFilePath = path.join(
     __dirname,
     "data",
@@ -61,6 +64,24 @@ app.get("/restaurants", (req, res) => {
     numberOfRestaurants: restaurantsData.length,
     restaurants: restaurantsData,
   });
+});
+
+app.get("/restaurant/:id", (req, res) => {
+  const restaurantId = req.params.id;
+  const restaurantDataFilePath = path.join(
+    __dirname,
+    "data",
+    "restaurants.json"
+  );
+  // reading data in a file
+  const fileData = fs.readFileSync(restaurantDataFilePath);
+  // parsing data to JSON
+  const restaurantsData = JSON.parse(fileData);
+  for (const restaurant of restaurantsData) {
+    if (restaurant.id === restaurantId) {
+      res.render("restaurant-details", { restaurant: restaurant });
+    }
+  }
 });
 
 app.listen(3000);
