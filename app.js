@@ -1,4 +1,5 @@
-const fs = require("fs");
+const resData = require("./util/restaurants-data");
+// const fs = require("fs");
 const path = require("path");
 
 const uuid = require("uuid");
@@ -29,13 +30,15 @@ app.post("/recommend", (req, res) => {
   const restaurant = req.body;
 
   restaurant.id = uuid.v4();
-  const restaurantsData = getStoredRestaurants();
+  const restaurantsData = resData.getStoredRestaurants();
 
   restaurantsData.push(restaurant);
+
   // writing data in JSON
   const storedRestaurants = JSON.stringify(restaurantsData);
+
   // writing data in file
-  storeRestaurants(storedRestaurants);
+  resData.storeRestaurants(storedRestaurants);
   res.redirect("/confirm");
 });
 
@@ -44,7 +47,7 @@ app.get("/confirm", (req, res) => {
 });
 
 app.get("/restaurants", (req, res) => {
-  const restaurantsData = getStoredRestaurants();
+  const restaurantsData = resData.getStoredRestaurants();
 
   res.render("restaurants", {
     numberOfRestaurants: restaurantsData.length,
@@ -55,12 +58,13 @@ app.get("/restaurants", (req, res) => {
 app.get("/restaurant/:id", (req, res) => {
   const restaurantId = req.params.id;
 
-  const restaurantsData = getStoredRestaurants();
+  const restaurantsData = resData.getStoredRestaurants();
 
   for (const restaurant of restaurantsData) {
     if (restaurant.id === restaurantId) {
       res.render("restaurant-details", { restaurant: restaurant });
     }
+    return;
   }
   res.render("404");
 });

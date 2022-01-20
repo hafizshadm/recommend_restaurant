@@ -11,6 +11,7 @@ const restaurantDataFilePath = path.join(
 function getStoredRestaurants() {
   // reading data in a file
   const fileData = fs.readFileSync(restaurantDataFilePath);
+
   // parsing data to JSON
   const restaurantsData = JSON.parse(fileData);
 
