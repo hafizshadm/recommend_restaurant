@@ -29,11 +29,30 @@ router.get("/confirm", (req, res) => {
 });
 
 router.get("/restaurants", (req, res) => {
-  const restaurantsData = resData.getStoredRestaurants();
+  let order = req.query.order;
+  let nextOrder = "desc";
 
+  if (order !== "asc" && order !== "desc") {
+    order = "asc";
+  }
+  if (order === "desc") {
+    nextOrder = "asc";
+  }
+
+  const restaurantsData = resData.getStoredRestaurants();
+  restaurantsData.sort((resA, resB) => {
+    if (
+      (order === "asc" && resA.name > resB.name) ||
+      (order === "desc" && resB.name > resA.name)
+    ) {
+      return 1;
+    }
+    return -1;
+  });
   res.render("restaurants", {
     numberOfRestaurants: restaurantsData.length,
     restaurants: restaurantsData,
+    nextOrder: nextOrder,
   });
 });
 
